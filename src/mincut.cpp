@@ -75,17 +75,26 @@ double calculateMaxDistMat(Matrixd A, std::vector<int> v2, double ** connections
 
 void showVertices(Matrixd vertices)
 {
+    const size_t nVertices = vertices.size();
+    size_t nsubvertices;
     std::cout << "Vertices: ";
-    for(auto k : vertices)
+    for(size_t i = 0; i < nVertices; i++)
     {
-        std::cout << "(";
-        for(auto u : k)
+        nsubvertices = vertices[i].size();
+        std::cout << "{";
+        for(size_t j = 0; j < nsubvertices; j++)
         {
-            std::cout << u << ", ";
+            std::cout << vertices[i][j];
+            if(j < nsubvertices - 1)
+                std::cout << ", ";
+            else
+                std::cout << "}";
         }
-        std::cout << ") -- ";
+        if(i < nVertices - 1)
+            std::cout << " -- ";
+        else 
+            std::cout << std::endl;
     }
-    std::cout << std::endl;
 }
 
 Matrixd treatPartition(Matrixd partition)
