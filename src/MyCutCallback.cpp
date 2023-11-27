@@ -65,7 +65,6 @@ void MyCutCallback::main()
 	}
 	cutSetPool = MaxBack(x_edge, n);
 
-
 	std::cout << "cutSetPool (Max-back): \n";
 	for(int i = 0; i < cutSetPool.size(); i++)
 	{
@@ -76,25 +75,26 @@ void MyCutCallback::main()
 		if(cutSetPool[i].size())
 			std::cout << std::endl;
 	}
-	// MaxBack(x_edge, n);
+	MaxBack(x_edge, n);
 	
 	if (cutSetPool.empty() && depth <= 7) {
 		// cutSetPool = MinCut(x_edge, n);
-		std::cout.setstate(std::ios_base::failbit);
-		cutSetPool = minCut(n, x_edge);
-		std::cout.clear();
-		// cutSetPool = MultipleMinCut(x_edge, n);
-	}
+		//std::cout.setstate(std::ios_base::failbit);
+		//cutSetPool = minCut(n, x_edge);
+		//std::cout.clear();
 
-	std::cout << "cutSetPool (Mincut): \n";
-	for(int i = 0; i < cutSetPool.size(); i++)
-	{
-		for(int j = 0; j < cutSetPool[i].size(); j++)
+
+		std::cout << "cutSetPool (Mincut): \n";
+		for(int i = 0; i < cutSetPool.size(); i++)
 		{
-			std::cout << cutSetPool[i][j] << " ";
+			for(int j = 0; j < cutSetPool[i].size(); j++)
+			{
+				std::cout << cutSetPool[i][j] << " ";
+			}
+			if(cutSetPool[i].size())
+				std::cout << std::endl;
 		}
-		if(cutSetPool[i].size())
-			std::cout << std::endl;
+		// cutSetPool = MultipleMinCut(x_edge, n);
 	}
 
 	/***************** Creating the constraints ***************/

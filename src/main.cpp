@@ -75,6 +75,7 @@ void STSP_Solve(Data *data, string instanceName, double ub)
     /******************************************************/
 
     /****************** Solve the model *******************/
+    int n_hours = 6;
     IloCplex STSP(model);
     STSP.setParam(IloCplex::TiLim, 2*60*60);
     STSP.setParam(IloCplex::Threads, 1);

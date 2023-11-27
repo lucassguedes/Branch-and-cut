@@ -30,10 +30,6 @@ double calculateDist(std::vector<int> v1, std::vector<int> v2, double ** connect
     {
         for(size_t j = 0; j < v2.size(); j++)
         {
-            int a, b;
-
-            connections[v1[i]][v2[j]];
-
             if(v1[i] > v2[j])
             {
                 dist += connections[v2[j]][v1[i]];
@@ -227,16 +223,18 @@ Matrixd minCut(int n, double ** connections)
         showVertices(vertices);
         std::cout << "\033[0m\n";
 
-        if(cut_of_the_phase < minimum)
+        if(cut_of_the_phase < minimum && cut_of_the_phase < 2)
         {
             bestSet = partition;
             minimum = cut_of_the_phase;
         }
     }
 
-    std::cout << "Melhor particao - ";
+    std::cout.clear();
+    std::cout << "\033[1;32mMelhor particao - ";
     showVertices(bestSet);
-    std::cout << "Minimum: " << minimum << std::endl;
+    std::cout << "Minimum: " << minimum << "\033[0m\n";
+    std::cout.setstate(std::ios_base::failbit);
 
     return bestSet;
 }
