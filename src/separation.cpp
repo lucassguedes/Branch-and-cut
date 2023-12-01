@@ -21,6 +21,43 @@ void updateMaxBackValues(double ** costs, std::vector<double> &maxBackValues, in
 }
 
 
+std::pair<int , double> getGreaterMaxBack(double ** costs, std::vector<int> &s, std::vector<bool> includedVertices, int n)
+{
+	double greaterMaxBack = -std::numeric_limits<double>::infinity();
+	double vertex = -1;
+	const size_t s_size = s.size();
+
+	for(size_t i = 0; i < n; i++) /*i percorrerá todos os possíveis vértices*/
+	{
+		double maxBack = 0;	
+
+		for(size_t j = 0; j < s_size; j++)/*j percorrerá as posições de s, que contém os vértices da solução*/
+		{
+			/*Aqui é feita a atualização dos valores de max-back, dos vértices que estão
+			  fora da solução relacionados com os vértices que estão dentro.*/
+			if(!includedVertices[i])
+			{
+				if(s[j] > i)
+				{
+					maxBack += costs[i][s[j]];
+				}
+				else if(i > s[j])
+				{
+					maxBack += costs[s[j]][i];
+				}
+			}
+		}
+
+		if(maxBack > greaterMaxBack)
+		{
+			greaterMaxBack = maxBack;
+			vertex = i;
+		}
+	}
+
+	return std::make_pair(vertex, greaterMaxBack);
+}
+
 VertexVector getMaxBackValues(double ** costs, std::vector<int> &s, std::vector<bool> includedVertices, int n){
 	VertexVector maxback_values;
 	const size_t s_size = s.size();
@@ -54,32 +91,19 @@ VertexVector getMaxBackValues(double ** costs, std::vector<int> &s, std::vector<
 	return maxback_values;
 }
 
-double calculateCutmin(Vectord s, Vectorb includedVertices, double ** costs, int n)
+double calculateCutmin(int vertex, Vectorb includedVertices, double ** costs, int n)
 {
 	double cutmin = 0;
-	for(auto element : s)
+	for(size_t i = 0; i < n; i++)
 	{
-		for(size_t i = 0; i < n; i++)
+		if(i < vertex)
 		{
-			if(!includedVertices[i])
-			{
-				int linha, coluna;
-				double value;
-				if(element > i)
-				{
-					linha = i;
-					coluna = element;
-				}else 
-				{
-					linha = element;
-					coluna = i;
-				}	
+			cutmin += costs[i][vertex];
+		}else if(vertex == i)
+		{
 
-				cutmin += costs[linha][coluna];
-
-			}
-
-			
+		}else{
+			cutmin += costs[vertex][i];
 		}
 	}
 	return cutmin;
@@ -98,39 +122,43 @@ vector <vector<int> >  MaxBack(double **x_edge, int n)
 	double cutmin, cutval;
 	cutmin = 0; /*O valor inicial de cutmin não é igual a zero, consulte o pdf*/
 	Vectord visited_vertices = {};
+
+	std::pair<int, double> bestMaxBack;
+
+	Vectorb verticesInSol = Vectorb(n, false);
 	
 	for(size_t start_vertex = 0; start_vertex < n; start_vertex++)
 	{
+
+		if(verticesInSol[start_vertex])
+			continue;
+
 		includedVertices[start_vertex] = 1;
+		verticesInSol[start_vertex] = 1;
 		smin = s0 = s = {};
 		s.push_back(start_vertex);
-		maxback_values = getMaxBackValues(x_edge, s, includedVertices, n);
-		cutval = cutmin = calculateCutmin(s, includedVertices, x_edge, n);
+		// maxback_values = getMaxBackValues(x_edge, s, includedVertices, n);
+		bestMaxBack = getGreaterMaxBack(x_edge, s, includedVertices, n);
+		cutval = cutmin = calculateCutmin(start_vertex, includedVertices, x_edge, n);
 		// std::cout << "Cutmin: " << cutmin << std::endl;
 		while(s.size() < n)
 		{
 			// std::cout << "maxback_values.size(): " << maxback_values.size() << std::endl;
 
-			if(maxback_values.size() == 0)
-				break;
+			if(bestMaxBack.first == -1)
+				continue;
 			
 			
-			Vertex v;
-			for(auto value : maxback_values)
-			{
-				if(!includedVertices[value.idx])
-				{
-					v = value;
-					break;
-				}
-			}
+			int vertex = bestMaxBack.first;
+			double mbVal = bestMaxBack.second;
+			
 
-			cutval = cutval + 2 - (2*v.maxBackValue);
+			cutval = cutval + 2 - (2*mbVal);
 			// std::cout << "v.maxBackValue: " << v.maxBackValue << std::endl;
-			s.push_back(v.idx);
-			includedVertices[v.idx] = 1;
+			s.push_back(vertex);
+			includedVertices[vertex] = 1;
 			/*substituir esta chamada de função por uma chamada de atualização*/
-			maxback_values = getMaxBackValues(x_edge, s, includedVertices, n);
+			bestMaxBack = getGreaterMaxBack(x_edge, s, includedVertices, n);
 
 			// std::cout << "cutval: " << cutval << ", cutmin: " << cutmin << std::endl;
 			if(cutval < cutmin)
@@ -140,7 +168,15 @@ vector <vector<int> >  MaxBack(double **x_edge, int n)
 				smin = s;
 			}
 		}
+		verticesInSol = Vectorb(n, false);
 		includedVertices = Vectorb(n, false);
+
+		/*Determinando quais vértices estão na solução (o que conta é Smin)*/
+		for(auto v : smin)
+		{
+			verticesInSol[v] = 1;
+		}
+
 		if(smin.size() < n)
         {
             solutions.push_back(smin);

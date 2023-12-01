@@ -40,7 +40,7 @@ SuperVertex mergeSuperVertices(SuperVertex sp1, SuperVertex sp2);
 
 std::vector<int> getA(int a, std::vector<SuperVertex> vertices, double ** costs, int n, int & rest);
 
-double calculateCutmin(Vectord s, Vectorb includedVertices, double ** costs, int n);
+double calculateCutmin(int vertex, Vectorb includedVertices, double ** costs, int n);
 double minCutPhase(std::vector<int> A, SuperVertex rest, std::vector<SuperVertex> supervertices, double ** costs);
 
 

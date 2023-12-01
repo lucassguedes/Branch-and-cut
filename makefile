@@ -2,8 +2,8 @@
 BITS_OPTION = -m64
 
 ####diretorios com as libs do cplex
-CPLEXDIR  = /local.files/lucassguedes/CPLEX_Studio129/cplex
-CONCERTDIR = /local.files/lucassguedes/CPLEX_Studio129/concert
+CPLEXDIR  = /home/lucas/CPLEX_Studio129/cplex
+CONCERTDIR = /home/lucas/CPLEX_Studio129/concert
    
 CPLEXLIBDIR   = $(CPLEXDIR)/lib/x86-64_linux/static_pic
 CONCERTLIBDIR = $(CONCERTDIR)/lib/x86-64_linux/static_pic

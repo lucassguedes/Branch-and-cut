@@ -1,6 +1,7 @@
 #include "MyCutCallback.h"
 #include <cstdio>
 #include "mincut.hpp"
+#include "PMaxBack.hpp"
 
 
 /********************************************** Class' Constructor **********************************************/
@@ -75,13 +76,13 @@ void MyCutCallback::main()
 		if(cutSetPool[i].size())
 			std::cout << std::endl;
 	}
-	MaxBack(x_edge, n);
+	//PMaxBack(x_edge, n);
 	
 	if (cutSetPool.empty() && depth <= 7) {
 		// cutSetPool = MinCut(x_edge, n);
-		//std::cout.setstate(std::ios_base::failbit);
-		//cutSetPool = minCut(n, x_edge);
-		//std::cout.clear();
+		std::cout.setstate(std::ios_base::failbit);
+		cutSetPool = minCut(n, x_edge);
+		std::cout.clear();
 
 
 		std::cout << "cutSetPool (Mincut): \n";

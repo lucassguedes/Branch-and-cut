@@ -1,9 +1,11 @@
 #include <vector>
 #include <map>
+#include <algorithm>
 
-typedef vector<int> super_node;
 
 using namespace std;
+
+typedef vector<int> super_node;
 
 
 pair<int,double> chooseBestMaxBack(vector<int> *s, int n, double **x, vector<bool>& inS);
