@@ -1,8 +1,6 @@
 #include "MyCutCallback.h"
 #include <cstdio>
 #include "mincut.hpp"
-#include "PMaxBack.hpp"
-
 
 /********************************************** Class' Constructor **********************************************/
 MyCutCallback::MyCutCallback(IloEnv env, const IloArray<IloBoolVarArray>& x_ref, int nodes) : IloCplex::UserCutCallbackI(env), x(x_ref), x_vars(env), n(nodes)
@@ -64,7 +62,10 @@ void MyCutCallback::main()
 			x_edge[i][j] = x_vals[l++];
 		}
 	}
+
+	std::cout << "Executando max-back...\n";
 	cutSetPool = MaxBack(x_edge, n);
+	std::cout << "Max-back finalizado...\n";
 
 	std::cout << "cutSetPool (Max-back): \n";
 	for(int i = 0; i < cutSetPool.size(); i++)
@@ -80,9 +81,11 @@ void MyCutCallback::main()
 	
 	if (cutSetPool.empty() && depth <= 7) {
 		// cutSetPool = MinCut(x_edge, n);
-		std::cout.setstate(std::ios_base::failbit);
-		cutSetPool = minCut(n, x_edge);
-		std::cout.clear();
+		// std::cout.setstate(std::ios_base::failbit);
+		// std::cout << "Executando mincut...\n";
+		// cutSetPool = minCut(n, x_edge);
+		// std::cout << "Mincut finalizado...\n";
+		// std::cout.clear();
 
 
 		std::cout << "cutSetPool (Mincut): \n";

@@ -1,257 +1,283 @@
 #include "mincut.hpp"
 
 #define NEGATIVE_INFINITY -std::numeric_limits<double>::infinity()
-
-typedef std::vector< std::vector<char> > Matrixc;
-typedef std::vector< std::vector<int> > Matrixd;
-
-void mergeVertices(Matrixd &A, int pos1, int pos2) {
-
-  if(pos2 < pos1)
-  {
-    std::cout << "\033[1;35mpos1 = " << pos1 << ", pos2 = " << pos2 << std::endl;
-    std::cout << "trocando...\n";
-    std::swap(pos1, pos2);
-    std::cout << "pos1 = " << pos1 << ", pos2 = " << pos2 << "\033[0m\n";
-  }
+#define POSITIVE_INFINITY std::numeric_limits<double>::infinity()
+#define IDENTIFIER 0
 
 
-  std::vector<int> v = A[pos2];
-
-  A.erase(A.begin() + pos2);
-
-  A[pos1].insert(A[pos1].end(), v.begin(), v.end());
+int getNVertices(std::vector<std::vector<int> > vertices)
+{
+    int count=0;
+    const int n = vertices.size();
+    for(int i = 0; i < n; i++)
+    {
+        if(vertices[i].size())
+            count++;
+    }
+    return count;
 }
 
-double calculateDist(std::vector<int> v1, std::vector<int> v2, double ** connections)
+void showVertexCollection(VertexCollection collection)
 {
-    double dist = 0;
-    for(size_t i = 0; i < v1.size(); i++)
+    for(auto v : collection)
     {
-        for(size_t j = 0; j < v2.size(); j++)
+        std::cout << v.first << ": (";
+        for(auto element : v.second)
         {
-            if(v1[i] > v2[j])
-            {
-                dist += connections[v2[j]][v1[i]];
-            }else{
-                dist += connections[v1[i]][v2[j]];
-            }
-            
+            std::cout << element << " ";
         }
+        std::cout << ") ";
     }
-
-    return dist;
-
-}
-
-double calculateDistMat(Matrixd A, std::vector<int> v2, double ** connections)
-{
-    double dist = 0;
-    for(size_t i = 0; i < A.size(); i++)
-    {
-        dist += calculateDist(A[i], v2, connections);
-    }
-
-    return dist;
-}
-
-double calculateMaxDistMat(Matrixd A, std::vector<int> v2, double ** connections)
-{
-    double dist = -std::numeric_limits<double>::infinity();
-    double calcdist;
-    for(size_t i = 0; i < A.size(); i++)
-    {
-        calcdist = calculateDist(A[i], v2, connections);
-        if(calcdist > dist)
-            dist = calcdist;
-    }
-
-    return dist;
-}
-
-void showVertices(Matrixd vertices)
-{
-    const size_t nVertices = vertices.size();
-    size_t nsubvertices;
-    std::cout << "Vertices: ";
-    for(size_t i = 0; i < nVertices; i++)
-    {
-        nsubvertices = vertices[i].size();
-        std::cout << "{";
-        for(size_t j = 0; j < nsubvertices; j++)
-        {
-            std::cout << vertices[i][j];
-            if(j < nsubvertices - 1)
-                std::cout << ", ";
-            else
-                std::cout << "}";
-        }
-        if(i < nVertices - 1)
-            std::cout << " -- ";
-        else 
-            std::cout << std::endl;
-    }
-}
-
-Matrixd treatPartition(Matrixd partition)
-{
-    std::vector<int> last = partition[partition.size() - 1];
-    std::vector<int> first_part;
-    Matrixd result;
-
-    partition.pop_back();
-
-    for(size_t i = 0; i < partition.size(); i++)
-    {
-        first_part.insert(first_part.end(), partition[i].begin(), partition[i].end());
-    }
-
-    result.push_back(first_part);
-    result.push_back(last);
-
-    return result;
-}
-
-
-double minCutPhase(Matrixd &bestPartition, Matrixd &vertices, int aIndex, double ** connections)
-{
-    double cut_of_the_phase = std::numeric_limits<double>::infinity();
-    int greaterIdx;
-    double greaterCost = NEGATIVE_INFINITY;
-    const int N = vertices.size();
-    double dist;
-    std::vector<int> lastVerticesIdx; /*Armazena os índices dos últimos dois vértices incluídos em A*/
-
-    Matrixd A = {vertices[aIndex]};
-
-    std::cout << "\n############################\nN = " << N << std::endl;
-
-    
-    std::vector<int> remainingIdx; //Lista de vértices que ainda não foram incluídos em A
-    for(size_t i = 0; i < N; i++) remainingIdx.push_back(i);
-
-
-    if(remainingIdx.size() == 2)
-        lastVerticesIdx = remainingIdx;
-
-    /*Removendo aIndex da lista de índices de vértices disponíveis*/
-    remainingIdx.erase(std::remove(remainingIdx.begin(), remainingIdx.end(), aIndex), remainingIdx.end());
-
-    std::cout<<"Inicio - Indices dos vertices restantes: ";
-    for(auto v : remainingIdx) std::cout << v << " ";
     std::cout << std::endl;
+}
+
+void showCutSetPool(CutSetPool cutSetPool)
+{
+    const size_t parts = cutSetPool.size();
+    
+    for(size_t i = 0; i < parts; i++)
+    {
+        for(size_t j = 0 ; j < cutSetPool[i].size(); j++)
+        {
+            std::cout << cutSetPool[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
 
 
-    // std::cout << "Iniciando minCutPhase...\n";
+void mergeVertices(std::vector<std::vector<int> > &collection, std::vector<int> &identifiers, int i, int j, double **matrix)
+{
+    int newIdx, toBeRemoved;
+
+    /*Fazendo merge dos vértices*/
+    if(collection[i][0] < collection[j][0])
+    {
+        collection[i].insert(collection[i].end(), collection[j].begin(), collection[j].end());
+        newIdx = i;
+        toBeRemoved = j;
+    }else{
+        collection[j].insert(collection[j].end(), collection[i].begin(), collection[i].end());
+        newIdx = j;
+        toBeRemoved = i;
+    }
+
+    collection[toBeRemoved].clear();
+
+
+    identifiers.erase(std::remove(identifiers.begin(), identifiers.end(), toBeRemoved), identifiers.end());
+
+    matrix[newIdx][toBeRemoved] = matrix[toBeRemoved][newIdx] = 0;
+    double cost;
+    /*Atualizando distâncias*/
+    for(auto idx : identifiers)
+    {
+        cost = (toBeRemoved > i) ? matrix[idx][toBeRemoved] : matrix[toBeRemoved][idx];
+        
+        matrix[idx][toBeRemoved] = matrix[toBeRemoved][idx] = 0;
+
+        matrix[newIdx][idx] += cost;
+        matrix[idx][newIdx] += cost;
+
+    }
+
+}
+
+
+int getTightlyVertexId(std::vector<int> collection, std::vector<std::vector<int> > vertices, std::map<int, bool> included, std::vector<int> identifiers, double** distMap)
+{
+    double maxDist, maxId, dist;
+
+    maxDist = NEGATIVE_INFINITY;
+    maxId = -1;
+    for(int i : identifiers)//Percorre todos os identificadores (todos os vértices)
+    {
+        dist = 0;
+        if(!included[i])//Se o vértice em questão não estiver incluído na coleçao considerada
+        {
+            for(int idx : collection)
+            {
+                const double cost = (idx > i) ? distMap[i][idx] : distMap[idx][i];
+                // std::cout << "Somando distância até " << idx << ", valor = " << cost << std::endl;
+                dist += cost;
+            }
+            if(dist > maxDist)
+            {
+                maxDist = dist;
+                maxId = i;
+            }
+        }
+        // std::cout << "Vértice " << i << ", dist = " << dist << std::endl;
+        
+    }
+
+    // std::cout << "Distância máxima: " << maxDist << std::endl;
+
+    return maxId;
+}
+
+double minCutPhase(int n, int &last, int &penultimate, std::vector<int> &bestCut, std::vector<std::vector<int> > vertices, std::vector<int> &identifiers, const int initVertexIdx, double ** matrix)
+{
+    double cut_of_the_phase = 0, greaterCost=NEGATIVE_INFINITY, dist;
+    int tightVertexId;
+    const int N = getNVertices(vertices);
+
+    std::vector<int> A = {initVertexIdx};
+    std::map<int, bool> included;
+
+    for(auto k : identifiers)included[k]=false;
+
+    included[initVertexIdx] = true;
+    // std::cout << "Mincutphase:\n";
+    // std::cout << "A: ";
+    // for(auto k : A)std::cout << k << " ";
+    // std::cout << std::endl;
     while(A.size() < N)
     {
-        if(remainingIdx.size() == 2)
-            lastVerticesIdx = remainingIdx;
-        
-        if(remainingIdx.size() == 1)
-        {
-            // std::cout << "Calculando distancia até este vertice: (";
-            // for(auto v :  vertices[remainingIdx[0]]) std::cout << v << ", ";
-            // std::cout << ")\n";
-            cut_of_the_phase = calculateDistMat(A, vertices[remainingIdx[0]], connections);
-        }
-        /*Procurando pelo vértice mais fortemente ligado à A*/
-        std::cout << "\033[1;36mA - ";
-        showVertices(A);
-        std::cout <<  "\033[0m\n";
-
-        std::cout<<"Indices dos vertices restantes: ";
-        for(auto v : remainingIdx) std::cout << v << " ";
-        std::cout << std::endl;
-
-        greaterCost = NEGATIVE_INFINITY;
-        std::cout << "\nProcurando pelo vertice mais fortemente ligado...\n";
-        for(size_t i : remainingIdx)
-        {
-            dist = calculateDistMat(A, vertices[i], connections);
-            // std::cout << "dist: " << dist << std::endl;
-
-            std::cout << "\tVertice - (";
-            for(auto element : vertices[i])std::cout << element << ", ";
-            std::cout << ") , custo: " << dist << std::endl;
-            if(dist > greaterCost)
-            {
-                greaterCost = dist;
-                greaterIdx = i;
-            }
-        }
-        std::cout << "\033[1;33mSelecionando vertice da posicao " << greaterIdx << ", cujo custo eh " << greaterCost << "\033[0m\n";
-        /*Inserindo vértice mais fortemente ligado à A em A*/
-        A.push_back(vertices[greaterIdx]);
-        /*Removendo o índice desse vértice da lista de vértices que ainda estão disponíveis*/
-        remainingIdx.erase(std::remove(remainingIdx.begin(), remainingIdx.end(), greaterIdx), remainingIdx.end());
+        tightVertexId = getTightlyVertexId(A, vertices, included, identifiers, matrix);
+        A.push_back(tightVertexId);
+        // std::cout << "tightVertexId: " << tightVertexId << std::endl;
+        included[tightVertexId] = true;
+        // std::cout << "A: ";
+        // for(auto k : A)std::cout << k << " ";
+        // std::cout << std::endl;
+        // std::cout << "Not included vertices: ";
+        // for(auto k : included){
+        //     if(!k.second)
+        //     {
+        //         std::cout << k.first << ": " << k.second << ", ";
+        //     }
+        // }
+        // std::cout << std::endl;
     }
+
+    last = A[A.size() - 1];
+    penultimate = A[A.size() - 2];
 
     
-    std::cout << "\033[1;36m Partição Final A - ";
-    showVertices(A);
-    std::cout <<  "\033[0m\n";
 
-    bestPartition = treatPartition(A);
+    for(int i : identifiers)
+    {
+        if(i != last)
+        {
+            cut_of_the_phase += (last > i) ? matrix[i][last] : matrix[last][i];
+        }
+    }
 
-    std::cout << "\033[1;34mCut-of-the-phase: " << cut_of_the_phase << "\033[0m\n";
+    A.pop_back(); /*Removendo último elemento incluído*/
+    
+    /*Obtendo o corte do grafo*/
+    std::vector<int> firstCut;
+    for(auto element : A)
+    {
+        firstCut.insert(firstCut.begin(), vertices[element].begin(), vertices[element].end());
+    }
+    
+    if(cut_of_the_phase <= 1.9999999)
+    {
+        if(vertices[last].size() <= n/2)
+        {
+            bestCut = vertices[last];
+        }else{
+            bestCut = firstCut;
+        }
+    }
 
-    /*Fazendo o merge dos últimos dois vértices inclusos em A*/
-    std::cout << "Fazendo merge dos vertices nas posicoes " << lastVerticesIdx[0] << " e " << lastVerticesIdx[1] << std::endl;
-    mergeVertices(vertices, lastVerticesIdx[0], lastVerticesIdx[1]);
 
     return cut_of_the_phase;
+
 }
 
-Matrixd minCut(int n, double ** connections)
+void clearInvalidValues(double ** matrix, const int n)
 {
-    Matrixd vertices;
-    Matrixd partition;
-    for(size_t i = 0; i < n; i++)vertices.push_back(std::vector<int>({i}));
+    const int threshold = 1e-8;
 
-    double minimum = std::numeric_limits<double>::infinity();
-    double cut_of_the_phase;
-    Matrixd bestSet;
-    while(vertices.size() > 1)
+    for(int i = 0; i < n; i++)
     {
-        std::cout << "\033[1;31mMincut - ";
-        showVertices(vertices);
-        std::cout << "\033[0m\n";
-        cut_of_the_phase = minCutPhase(partition, vertices, 0, connections);
-
-        std::cout << "\033[1;32mMincut (vertices unidos) - ";
-        showVertices(vertices);
-        std::cout << "\033[0m\n";
-
-        if(cut_of_the_phase < minimum && cut_of_the_phase < 2)
+        for(int j = 0; j < n; j++)
         {
-            bestSet = partition;
+            if(matrix[i][j] < threshold || std::isnan(matrix[i][j])) matrix[i][j] = 0;
+        }
+    }
+
+}
+
+
+CutSetPool minCut(int n, double ** matrix)
+{
+    /*Identificadores dos vértices que serão unidos*/
+    int last, penultimate;
+
+    CutSetPool cutSetPool;
+    std::vector<int> cutFound;
+
+
+    clearInvalidValues(matrix, n);
+
+    /*Identificadores ainda ativos
+
+      Ao  fazer  a  junção  entre  dois  vértices,  o  maior
+      identificador dos dois deve ser desativado e, portanto,
+      removido da lista de identificadores.
+    */
+    std::vector<int> identifiers; 
+
+    std::vector<std::vector<int> > vertices;
+
+    /*Inicializando a coleção de vértices - inicialmente "solitários"*/
+    for(size_t i = 0; i < n; i++){
+        vertices.push_back(std::vector<int>({i}));
+        identifiers.push_back(i);
+    }
+
+    double minimum = POSITIVE_INFINITY, cut_of_the_phase;
+
+
+    // for(auto k : distMap)
+    // {
+    //     for(auto u: k.second)
+    //     {
+    //         std::cout << k.first << "---( " << u.second << " )--> " << u.first << ";";
+    //     }
+    //     std::cout<< std::endl;
+    // }
+
+
+    // showVertexCollection(vertexCollection);
+    while(getNVertices(vertices) > 1)
+    {
+        cut_of_the_phase = minCutPhase(n, last, penultimate, cutFound, vertices, identifiers, identifiers[0], matrix);
+
+        // std::cout << "cut-of-the-phase: " << cut_of_the_phase << std::endl;
+        // std::cout << "CutSetPool: \n";
+        // showCutSetPool(cutSetPool);
+        if(!cutFound.empty())
+        {
+            cutSetPool.push_back(cutFound);
             minimum = cut_of_the_phase;
+            cutFound.clear();
         }
+
+        // std::cout << "Fazendo merge dos vértices " << last << " e " << penultimate << std::endl;
+        mergeVertices(vertices, identifiers, last, penultimate, matrix);
+        // std::cout << "Identificadores: ";
+        // for(auto k : identifiers) std::cout << k << " ";
+        // std::cout << std::endl;
+        // for(auto k : distMap)
+        // {
+        //     for(auto u: k.second)
+        //     {
+        //         std::cout << k.first << "---( " << u.second << " )--> " << u.first << ";";
+        //     }
+        //     std::cout<< std::endl;
+        // }
+        // showVertexCollection(vertexCollection);
+
     }
 
-    std::cout.clear();
-    std::cout << "\033[1;32mMelhor particao - ";
-    showVertices(bestSet);
-    std::cout << "Minimum: " << minimum << "\033[0m\n";
-    std::cout.setstate(std::ios_base::failbit);
+    // std::cout << "Minimum: " << minimum << std::endl;
+    // std::cout << "CutSetPool: \n";
+    // showCutSetPool(cutSetPool);
 
-    return bestSet;
-}
-
-/*Esta função é usada apenas para inserir vértices que não são múltiplos*/
-void insertElement(Matrixd &vertices, int element)
-{
-    bool found = false;
-    for(size_t i = 0; i < vertices.size(); i++)
-    {
-        if(std::find(vertices[i].begin(), vertices[i].end(), element) != vertices[i].end())
-        {
-            found = true;
-            break;
-        }
-            
-    }
-    if(!found)
-        vertices.push_back(std::vector<int>({element}));
+    return cutSetPool;
 }
