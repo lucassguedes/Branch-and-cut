@@ -4,6 +4,8 @@
 #define POSITIVE_INFINITY std::numeric_limits<double>::infinity()
 #define IDENTIFIER 0
 
+#define EPSILON 0.00000001
+
 
 int getNVertices(std::vector<std::vector<int> > vertices)
 {
@@ -72,7 +74,7 @@ void mergeVertices(std::vector<std::vector<int> > &collection, std::vector<int> 
     /*Atualizando distâncias*/
     for(auto idx : identifiers)
     {
-        cost = (toBeRemoved > i) ? matrix[idx][toBeRemoved] : matrix[toBeRemoved][idx];
+        cost = (toBeRemoved > idx) ? matrix[idx][toBeRemoved] : matrix[toBeRemoved][idx];
         
         matrix[idx][toBeRemoved] = matrix[toBeRemoved][idx] = 0;
 
@@ -99,7 +101,7 @@ int getTightlyVertexId(std::vector<int> collection, std::vector<std::vector<int>
             {
                 const double cost = (idx > i) ? distMap[i][idx] : distMap[idx][i];
                 // std::cout << "Somando distância até " << idx << ", valor = " << cost << std::endl;
-                dist += cost;
+                dist += (std::isnan(cost)) ? 0 : cost;
             }
             if(dist > maxDist)
             {
@@ -136,7 +138,6 @@ double minCutPhase(int n, int &last, int &penultimate, std::vector<int> &bestCut
     {
         tightVertexId = getTightlyVertexId(A, vertices, included, identifiers, matrix);
         A.push_back(tightVertexId);
-        // std::cout << "tightVertexId: " << tightVertexId << std::endl;
         included[tightVertexId] = true;
         // std::cout << "A: ";
         // for(auto k : A)std::cout << k << " ";
@@ -173,7 +174,11 @@ double minCutPhase(int n, int &last, int &penultimate, std::vector<int> &bestCut
         firstCut.insert(firstCut.begin(), vertices[element].begin(), vertices[element].end());
     }
     
-    if(cut_of_the_phase <= 1.9999999)
+    // std::cout << "Last One (A2): ";
+    // for(int i = 0; i < vertices[last].size(); i++) std::cout << vertices[last][i] << " ";
+    // std::cout << std::endl;
+    // std::cout << "Value (A2): " << cut_of_the_phase << std::endl;
+    if(cut_of_the_phase < 1.9999999)
     {
         if(vertices[last].size() <= n/2)
         {
@@ -212,7 +217,25 @@ CutSetPool minCut(int n, double ** matrix)
     std::vector<int> cutFound;
 
 
-    clearInvalidValues(matrix, n);
+    // std::cout << "Matrix (A2): \n";
+    // for(int i = 0; i < n; i++)
+    // {
+    //     for(int j = 0; j < n; j++)
+    //     {
+    //         double value = (j >= i+1) ? matrix[i][j] : 0;
+    //         printf("%2.0f ", value);
+    //     }
+    //     printf("\n");
+    // }
+
+    // clearInvalidValues(matrix, n);
+    for(int i = 0; i < n; i++){
+        for(int j = i+1; j < n; j++){
+            if(matrix[i][j] < EPSILON){
+                matrix[i][j] = 0;
+            }
+        }
+    }
 
     /*Identificadores ainda ativos
 
@@ -244,7 +267,7 @@ CutSetPool minCut(int n, double ** matrix)
 
 
     // showVertexCollection(vertexCollection);
-    while(getNVertices(vertices) > 1)
+    while(getNVertices(vertices) > 2)
     {
         cut_of_the_phase = minCutPhase(n, last, penultimate, cutFound, vertices, identifiers, identifiers[0], matrix);
 

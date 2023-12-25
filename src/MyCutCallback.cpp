@@ -23,6 +23,28 @@ IloCplex::CallbackI* MyCutCallback::duplicateCallback() const
 /*****************************************************************************************************************/
 
 /************************************ Callback's code that is runned by CPLEX ************************************/
+
+bool compareCutSetPool(std::vector<std::vector<int> > c1, std::vector<std::vector<int> > c2)
+{
+	if(c1.size() != c2.size())
+		return false;
+	
+	for(int i = 0; i < c1.size(); i++)
+	{
+		if(c1[i].size() != c2[i].size())
+			return false;
+		
+		for(int j = 0; j < c1[i].size(); j++)
+		{
+			if(c1[i][j] != c2[i][j])
+				return false;
+		}
+	}
+
+	return true;
+}
+
+
 void MyCutCallback::main() 
 {
 	std::cout << "MyCutCallback\n";
@@ -51,53 +73,90 @@ void MyCutCallback::main()
 	vector<IloConstraint> cons; 
 
 	double **x_edge = new double*[n];
+	double **x_edge2 = new double*[n];
  
 	for (int i = 0; i < n; i++) {
 		x_edge[i] = new double[n];
+		x_edge2[i] = new double[n];
+
 	}
 
 	int l = 0;
 	for(int i = 0; i < n; i++) {
 		for(int j = i+1; j < n; j++) {
-			x_edge[i][j] = x_vals[l++];
+			x_edge2[i][j] = x_edge[i][j] = x_vals[l++];
 		}
 	}
 
-	std::cout << "Executando max-back...\n";
+	x_vals.end();
+
+	// std::cout << "Executando max-back...\n";
 	cutSetPool = MaxBack(x_edge, n);
-	std::cout << "Max-back finalizado...\n";
+	// std::cout << "Max-back finalizado...\n";
 
-	std::cout << "cutSetPool (Max-back): \n";
-	for(int i = 0; i < cutSetPool.size(); i++)
-	{
-		for(int j = 0; j < cutSetPool[i].size(); j++)
-		{
-			std::cout << cutSetPool[i][j] << " ";
-		}
-		if(cutSetPool[i].size())
-			std::cout << std::endl;
-	}
+	// std::cout << "cutSetPool (Max-back): \n";
+	// for(int i = 0; i < cutSetPool.size(); i++)
+	// {
+	// 	for(int j = 0; j < cutSetPool[i].size(); j++)
+	// 	{
+	// 		std::cout << cutSetPool[i][j] << " ";
+	// 	}
+	// 	if(cutSetPool[i].size())
+	// 		std::cout << std::endl;
+	// }
 	//PMaxBack(x_edge, n);
-	
+
+	std::vector<std::vector<int> > cutSetPool2;
 	if (cutSetPool.empty() && depth <= 7) {
 		// cutSetPool = MinCut(x_edge, n);
 		// std::cout.setstate(std::ios_base::failbit);
 		// std::cout << "Executando mincut...\n";
-		// cutSetPool = minCut(n, x_edge);
+
+		for(int i = 0; i < n; i++) {
+			for(int j = i+1; j < n; j++) {
+				x_edge2[i][j] = x_edge[i][j];
+			}
+		}
+
+		// cutSetPool = MinCut(x_edge, n);
+		cutSetPool = minCut(n, x_edge2);
+
+		// if(compareCutSetPool(cutSetPool, cutSetPool2))
+		// {
+		// 	std::cout << "They are equal!\n";
+		// }else
+		// {
+		// 	std::cout << "They are different!\n";
+
+		// 	std::cout << "cutSetPool: \n";
+		// 	for(int i = 0; i < cutSetPool.size(); i++)
+		// 	{
+		// 		for(int j = 0; j < cutSetPool[i].size(); j++)
+		// 		{
+		// 			std::cout << cutSetPool[i][j] << " ";
+		// 		}
+		// 		if(cutSetPool[i].size())
+		// 			std::cout << std::endl;
+		// 	}
+
+		// 	std::cout << "cutSetPool2: \n";
+		// 	for(int i = 0; i < cutSetPool2.size(); i++)
+		// 	{
+		// 		for(int j = 0; j < cutSetPool2[i].size(); j++)
+		// 		{
+		// 			std::cout << cutSetPool2[i][j] << " ";
+		// 		}
+		// 		if(cutSetPool2[i].size())
+		// 			std::cout << std::endl;
+		// 	}
+		// 	getchar();
+		// }
+
 		// std::cout << "Mincut finalizado...\n";
 		// std::cout.clear();
 
 
-		std::cout << "cutSetPool (Mincut): \n";
-		for(int i = 0; i < cutSetPool.size(); i++)
-		{
-			for(int j = 0; j < cutSetPool[i].size(); j++)
-			{
-				std::cout << cutSetPool[i][j] << " ";
-			}
-			if(cutSetPool[i].size())
-				std::cout << std::endl;
-		}
+		
 		// cutSetPool = MultipleMinCut(x_edge, n);
 	}
 
@@ -123,12 +182,15 @@ void MyCutCallback::main()
 	}
 	/**********************************************************/
 
-	x_vals.end();
 	/******************* Cleaning the memory ******************/
 	for (int i = 0; i < n; i++) {
 		delete[] x_edge[i];
+		delete[] x_edge2[i];
+
 	}
 	delete[] x_edge;
+	delete[] x_edge2;
+
 	/**********************************************************/
 }
 /*****************************************************************************************************************/

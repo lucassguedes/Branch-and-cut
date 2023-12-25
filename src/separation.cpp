@@ -258,6 +258,10 @@ double MinCutPhase(vector<vector<int>>& V, double **x, int n, int a, int& last1,
     last2 = A[A.size() - 2];
     
     int indSet1 = index2D(V, last1);
+    // std::cout << "Last One (A1): ";
+    // for(int i = 0; i < V[indSet1].size(); i++) std::cout << V[indSet1][i] << " ";
+    // std::cout << std::endl;
+    std::cout << "Value (A1): " << value << std::endl;
     if(value < 2 - EPSILON){ //getting the smaller subtour(less constraints) set
         if(V[indSet1].size() <= n/2){
             set = V[indSet1];
@@ -280,7 +284,19 @@ vector<vector<int>> MinCut(double**x, int n){
     int last1, last2;
     double cutOfThePhase;
 
-    int a = rand() % n;
+    // int a = rand() % n;
+    int a = 0;
+
+    // std::cout << "Matrix (A1): \n";
+    // for(int i = 0; i < n; i++)
+    // {
+    //     for(int j = 0; j < n; j++)
+    //     {
+    //         double value = (j >= i+1) ? x[i][j] : 0;
+    //         printf("%2.0f ", value);
+    //     }
+    //     printf("\n");
+    // }
 
     for(int i = 0; i < n; i++){
         for(int j = i+1; j < n; j++){
@@ -411,10 +427,7 @@ double calculateCutmin(int vertex, Vectorb includedVertices, double ** costs, in
 		if(i < vertex)
 		{
 			cutmin += costs[i][vertex];
-		}else if(vertex == i)
-		{
-
-		}else{
+		}else if(i != vertex){
 			cutmin += costs[vertex][i];
 		}
 	}

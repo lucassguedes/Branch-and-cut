@@ -1,0 +1,204 @@
+a280.tsp
+	reference_optimal_value: 2579
+	our_code_value: 2579
+bays29.tsp   
+	reference_optimal_value: 2020
+	our_code_value:  2020
+burma14.tsp  
+	reference_optimal_value: 3323
+	our_code_value: 3323
+dantzig42.tsp  
+	reference_optimal_value: 699
+	our_code_value: 699
+fri26.tsp   
+	reference_optimal_value: 937
+	our_code_value: 937
+gr202.tsp  
+	reference_optimal_value: 40160
+	our_code_value: 40160
+gr48.tsp     
+	reference_optimal_value: 5046
+	our_code_value: 5046
+kroA200.tsp  
+	reference_optimal_value: 29368
+	our_code_value: 29368
+kroD100.tsp 
+	reference_optimal_value: 21294
+	our_code_value: 21294
+pcb442.tsp  
+	reference_optimal_value: 50778
+	our_code_value: 50778
+pr152.tsp  
+	reference_optimal_value: 73682
+	our_code_value: 73682
+rat195.tsp  
+	reference_optimal_value: 2323
+	our_code_value: 2323
+si535.tsp    
+	reference_optimal_value: 
+	our_code_value: 
+u159.tsp
+	reference_optimal_value:42080
+	our_code_value: 42080
+ali535.tsp  
+	reference_optimal_value:
+	our_code_value: 
+berlin52.tsp  
+	reference_optimal_value: 7542
+	our_code_value: 7542
+ch130.tsp    
+	reference_optimal_value:
+	our_code_value: 
+eil101.tsp     
+	reference_optimal_value:
+	our_code_value: 
+gil262.tsp  
+	reference_optimal_value:
+	our_code_value: 
+gr21.tsp   
+	reference_optimal_value:
+	our_code_value: 
+gr96.tsp     
+	reference_optimal_value:
+	our_code_value: 
+kroB100.tsp  
+	reference_optimal_value:
+	our_code_value: 
+kroE100.tsp  
+	reference_optimal_value:
+	our_code_value:  
+pr107.tsp   
+	reference_optimal_value:
+	our_code_value: 
+pr226.tsp  
+	reference_optimal_value:
+	our_code_value: 
+rat99.tsp 
+	reference_optimal_value:
+	our_code_value:   
+st70.tsp    
+	reference_optimal_value:
+	our_code_value:  
+ulysses16.tsp
+	reference_optimal_value:
+	our_code_value: 
+att48.tsp   
+	reference_optimal_value:
+	our_code_value: 
+bier127.tsp   
+	reference_optimal_value:
+	our_code_value: 
+ch150.tsp    
+	reference_optimal_value:
+	our_code_value: 
+eil51.tsp 
+	reference_optimal_value:
+	our_code_value:      
+gr120.tsp   
+	reference_optimal_value:
+	our_code_value: 
+gr229.tsp  
+	reference_optimal_value:
+	our_code_value: 
+hk48.tsp   
+	reference_optimal_value:
+	our_code_value:   
+kroB150.tsp
+	reference_optimal_value:
+	our_code_value:   
+lin105.tsp    
+	reference_optimal_value:
+	our_code_value: 
+pr124.tsp  
+	reference_optimal_value:
+	our_code_value:  
+pr264.tsp  
+	reference_optimal_value:
+	our_code_value: 
+rd100.tsp   
+	reference_optimal_value:
+	our_code_value: 
+swiss42.tsp  
+	reference_optimal_value:
+	our_code_value: 
+ulysses22.tsp
+	reference_optimal_value:
+	our_code_value: 
+att532.tsp  
+	reference_optimal_value:
+	our_code_value: 
+brazil58.tsp 
+	reference_optimal_value:
+	our_code_value:  
+d198.tsp     
+	reference_optimal_value:
+	our_code_value: 
+eil76.tsp    
+	reference_optimal_value:
+	our_code_value:   
+gr137.tsp  
+	reference_optimal_value:
+	our_code_value:  
+gr24.tsp   
+	reference_optimal_value:
+	our_code_value: 
+kroA100.tsp  
+	reference_optimal_value:
+	our_code_value: 
+kroB200.tsp  
+	reference_optimal_value:
+	our_code_value: 
+lin318.tsp    
+	reference_optimal_value:
+	our_code_value: 
+pr136.tsp   
+	reference_optimal_value:
+	our_code_value: 
+pr299.tsp  
+	reference_optimal_value:
+	our_code_value: 
+rd400.tsp
+	reference_optimal_value:
+	our_code_value:    
+ts225.tsp
+	reference_optimal_value:
+	our_code_value: 
+bayg29.tsp  
+	reference_optimal_value:
+	our_code_value: 
+brg180.tsp    
+	reference_optimal_value:
+	our_code_value: 
+d493.tsp     
+	reference_optimal_value:
+	our_code_value: 
+fl417.tsp   
+	reference_optimal_value:
+	our_code_value:   
+gr17.tsp   
+	reference_optimal_value:
+	our_code_value: 
+gr431.tsp  
+	reference_optimal_value:
+	our_code_value: 
+kroA150.tsp  
+	reference_optimal_value:
+	our_code_value: 
+kroC100.tsp  
+	reference_optimal_value:
+	our_code_value: 
+linhp318.tsp  
+	reference_optimal_value:
+	our_code_value: 
+pr144.tsp   
+	reference_optimal_value:
+	our_code_value: 
+pr76.tsp   
+	reference_optimal_value:
+	our_code_value: 
+si175.tsp   
+	reference_optimal_value:
+	our_code_value: 
+tsp225.tsp
+	reference_optimal_value:
+	our_code_value: 
