@@ -23,7 +23,7 @@ IloCplex::CallbackI* MyLazyCallback::duplicateCallback() const
 /************************************ Callback's code that is runned by CPLEX ************************************/
 void MyLazyCallback::main() 
 {	
-	std::cout << "MyLazyCallback\n";
+	// std::cout << "MyLazyCallback\n";
 	/********** Getting the relaxed variables values **********/
 	IloNumArray x_vals(getEnv(), (0.5*(n)*(n-1)));
 	getValues(x_vals, x_vars);
