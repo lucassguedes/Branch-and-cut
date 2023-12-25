@@ -122,6 +122,7 @@ void STSP_Solve(Data *data, string instanceName, double ub)
     int objValue = STSP.getObjValue();
 
     std::cout << objValue << std::endl;
+    std::cout << timeAfter-timeBefore << std::endl;
 
     // printResults(STSP, instanceName, timeAfter-timeBefore);
 	// printSolution(STSP, x, dimension);
