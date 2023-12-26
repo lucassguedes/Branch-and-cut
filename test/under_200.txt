@@ -1,0 +1,72 @@
+bier127.tsp
+	obj: 118282
+	time: 1.08
+ch130.tsp
+	obj: 6110
+	time: 1.85
+ch150.tsp
+	obj: 6528
+	time: 5.64
+d198.tsp
+	obj: 15780
+	time: 21.9
+eil101.tsp
+	obj: 629
+	time: 0.19
+gr120.tsp
+	obj: 6942
+	time: 1.97
+gr137.tsp
+	obj: 69853
+	time: 3.35
+kroA100.tsp
+	obj: 21282
+	time: 1.29
+kroA150.tsp
+	obj: 26524
+	time: 12.38
+kroB100.tsp
+	obj: 22141
+	time: 1.25
+kroB150.tsp
+	obj: 26130
+	time: 30.93
+kroC100.tsp
+	obj: 20749
+	time: 0.98
+kroD100.tsp
+	obj: 21294
+	time: 1.35
+kroE100.tsp
+	obj: 22068
+	time: 3.93
+lin105.tsp
+	obj: 14379
+	time: 0.23
+pr107.tsp
+	obj: 44303
+	time: 0.13
+pr124.tsp
+	obj: 59030
+	time: 3.31
+pr136.tsp
+	obj: 96772
+	time: 5.44
+pr144.tsp
+	obj: 58537
+	time: 3.77
+pr152.tsp
+	obj: 73682
+	time: 17.98
+rat195.tsp
+	obj: 2323
+	time: 89.05
+rd100.tsp
+	obj: 7910
+	time: 0.59
+si175.tsp
+	obj: 21407
+	time: 62.18
+u159.tsp
+	obj: 42080
+	time: 4.36

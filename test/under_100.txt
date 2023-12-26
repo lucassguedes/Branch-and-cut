@@ -1,0 +1,69 @@
+att48.tsp
+	obj: 10628
+	time: 0.07
+bayg29.tsp
+	obj: 1610
+	time: 0.01
+bays29.tsp
+	obj: 2020
+	time: 0.01
+berlin52.tsp
+	obj: 7542
+	time: 0
+brazil58.tsp
+	obj: 25395
+	time: 0.05
+brg180.tsp
+	obj: 1950
+	time: 0.98
+burma14.tsp
+	obj: 3323
+	time: 0
+dantzig42.tsp
+	obj: 699
+	time: 0.05
+eil51.tsp
+	obj: 426
+	time: 0.09
+eil76.tsp
+	obj: 538
+	time: 0.04
+fri26.tsp
+	obj: 937
+	time: 0
+gr17.tsp
+	obj: 2085
+	time: 0
+gr21.tsp
+	obj: 2707
+	time: 0
+gr24.tsp
+	obj: 1272
+	time: 0
+gr48.tsp
+	obj: 5046
+	time: 0.11
+gr96.tsp
+	obj: 55209
+	time: 2.1
+hk48.tsp
+	obj: 11461
+	time: 0.03
+pr76.tsp
+	obj: 108159
+	time: 12.92
+rat99.tsp
+	obj: 1211
+	time: 0.45
+st70.tsp
+	obj: 675
+	time: 0.1
+swiss42.tsp
+	obj: 1273
+	time: 0.01
+ulysses16.tsp
+	obj: 6859
+	time: 0
+ulysses22.tsp
+	obj: 7013
+	time: 0
